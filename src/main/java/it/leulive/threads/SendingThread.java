@@ -18,7 +18,6 @@ public class SendingThread extends Thread{
     public SendingThread(Socket s) throws IOException{
         this.clientSocket = s;
         this.out = new DataOutputStream(clientSocket.getOutputStream());
-        out.writeBytes(client_username);
     }
 
     /**
