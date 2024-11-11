@@ -16,12 +16,12 @@ public class ListeningThread extends Thread{
           this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
-    public String ascolta() throws IOException{
+    public String listen() throws IOException{
         String messaggioRIcevuto = in.readLine();
         String mittente = in.readLine();
 
         String info = messaggioRIcevuto + ":" + mittente;
-        return messaggioRIcevuto;
+        return info;
     }
    
  
