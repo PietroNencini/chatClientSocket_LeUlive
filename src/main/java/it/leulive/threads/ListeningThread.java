@@ -6,19 +6,19 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ListeningThread extends Thread{
-     Socket s;
-     BufferedReader in;
+    Socket clientSocket;
+    BufferedReader in;
 
     public ListeningThread(Socket clientSocket) throws IOException{
-          this.s = clientSocket;
-          this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        this.clientSocket = clientSocket;
+        this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
     @Override
     public void run() {
         try {
             do {
-                listen();
+                String newMessage = listen();
             } while(true);
         } catch (IOException e) {
             System.out.println("Non riesco a ricevere messaggi");
@@ -28,13 +28,13 @@ public class ListeningThread extends Thread{
 
 
     public String listen() throws IOException{
-        String messaggioRIcevuto = in.readLine();
-        String mittente = in.readLine();
+        String receivedMessage = in.readLine();
+        String sender = in.readLine();
 
-        String info = messaggioRIcevuto + ":" + mittente;
+        String info = sender + " : " + receivedMessage;
         return info;
     }
-   
- 
-    }
+
+
+}
 

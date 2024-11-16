@@ -8,12 +8,11 @@ import java.net.Socket;
 public class SendingThread extends Thread{
     Socket clientSocket;
     DataOutputStream out;
-    String client_username;
 
     /**
-     * Avvia l'esecuzion del Thread di invio 
-     * @param s
-     * @throws IOException
+     * Avvia l'esecuzione del Thread di invio 
+     * @param s Socket del client
+     * @throws IOException Se ci sono problemi nell'avvio del Thread
      */
     public SendingThread(Socket s) throws IOException{
         this.clientSocket = s;
@@ -28,17 +27,7 @@ public class SendingThread extends Thread{
      */
     public void sendMessage(String message, String username) throws IOException{
         out.writeBytes(message + "\n");
-        out.writeBytes(username);
+        out.writeBytes(username + "\n");
         System.out.println("Messaggio inviato");
     }
-
-    
-    public String getClient_username() {
-        return client_username;
-    }
-
-    public void setClient_username(String client_username) {
-        this.client_username = client_username;
-    }
-
 }

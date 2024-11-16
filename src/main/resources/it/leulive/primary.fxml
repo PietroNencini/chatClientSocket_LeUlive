@@ -6,14 +6,23 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox alignment="CENTER" prefHeight="339.0" prefWidth="262.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.PrimaryController">
    <children>
       <AnchorPane prefHeight="299.0" prefWidth="222.0" style="-fx-border-color: black;">
          <children>
-            <Label layoutX="39.0" layoutY="50.0" prefHeight="36.0" prefWidth="144.0" text="INSERIRE USERNAME:" textAlignment="CENTER" />
-            <Button fx:id="primaryButton" layoutX="63.0" layoutY="220.0" onAction="#startConnection" style="-fx-background-color: green; -fx-border-color: black;" text="CONNETTITI" />
+            <Label layoutX="39.0" layoutY="50.0" prefHeight="36.0" prefWidth="144.0" text="INSERIRE USERNAME:" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
+            <Button fx:id="primaryButton" layoutX="64.0" layoutY="238.0" onAction="#startConnection" style="-fx-background-color: green; -fx-border-color: black;" text="CONNETTITI" />
             <TextArea fx:id="username" layoutX="18.0" layoutY="131.0" prefHeight="13.0" prefWidth="187.0" />
+            <Label alignment="CENTER" layoutX="9.0" layoutY="187.0" prefHeight="20.0" prefWidth="194.0" textAlignment="CENTER" textFill="RED">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
