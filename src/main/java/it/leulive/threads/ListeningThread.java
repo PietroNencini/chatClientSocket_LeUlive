@@ -8,6 +8,7 @@ import java.net.Socket;
 public class ListeningThread extends Thread{
     Socket clientSocket;
     BufferedReader in;
+    String last_message;
 
     public ListeningThread(Socket clientSocket) throws IOException{
         this.clientSocket = clientSocket;
@@ -18,14 +19,13 @@ public class ListeningThread extends Thread{
     public void run() {
         try {
             do {
-                String newMessage = listen();
+                this.last_message = listen();
             } while(true);
         } catch (IOException e) {
             System.out.println("Non riesco a ricevere messaggi");
             e.printStackTrace();
         }
     }
-
 
     public String listen() throws IOException{
         String receivedMessage = in.readLine();
@@ -34,7 +34,6 @@ public class ListeningThread extends Thread{
         String info = sender + " : " + receivedMessage;
         return info;
     }
-
 
 }
 

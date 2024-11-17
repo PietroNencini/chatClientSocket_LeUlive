@@ -1,16 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.SecondaryController">
-    <children>
-        <Label text="Secondary View" />
-        <Button fx:id="secondaryButton" text="Switch to Primary View" onAction="#switchToPrimary" />
-    </children>
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.SecondaryController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
+   <children>
+      <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="49.0" prefWidth="1240.0">
+        <items>
+          <Button alignment="TOP_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exit" style="-fx-border-radius: 10px; -fx-background-color: red;" text="X" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="MOVE" />
+               </cursor>
+               <effect>
+                  <Blend opacity="0.86" />
+               </effect>
+            </Button>
+            <Label nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="1167.0" text="CHATTA CON ALTRI UTENTI">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+        </items>
+      </ToolBar>
+      <Accordion fx:id="chatContainer" prefHeight="460.0" prefWidth="1240.0">
+        <panes>
+          <TitledPane fx:id="globalChatContainer" animated="false" prefHeight="413.0" prefWidth="1240.0" text="Chat di gruppo">
+            <content>
+              <AnchorPane prefHeight="435.0" prefWidth="1238.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding></AnchorPane>
+            </content>
+               <font>
+                  <Font size="18.0" />
+               </font>
+          </TitledPane>
+        </panes>
+      </Accordion>
+      <Line endX="1116.5" startX="-100.0" />
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <TextArea fx:id="msgContent" layoutX="94.0" layoutY="10.0" prefHeight="160.0" prefWidth="317.0" promptText="&quot;Messaggio...&quot;" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextArea>
+            <RadioButton fx:id="globalChoice" layoutX="474.0" layoutY="39.0" mnemonicParsing="false" onAction="#disableFinalUser" prefHeight="35.0" prefWidth="159.0" selected="true" text="Messaggio globale">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </RadioButton>
+            <RadioButton fx:id="singleChoice" layoutX="474.0" layoutY="105.0" mnemonicParsing="false" onAction="#enableFinalUser" prefHeight="35.0" prefWidth="159.0" text="Messaggio privato">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </RadioButton>
+            <TextField fx:id="finalUser" disable="true" layoutX="652.0" layoutY="105.0" prefHeight="35.0" prefWidth="186.0" promptText="Destinatario">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <Button layoutX="924.0" layoutY="70.0" mnemonicParsing="false" opacity="0.99" prefHeight="39.0" prefWidth="151.0" style="-fx-background-color: rgb(0,100,255);" text="INVIA" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <Line endX="1116.5" startX="-100.0" />
+   </children>
 </VBox>

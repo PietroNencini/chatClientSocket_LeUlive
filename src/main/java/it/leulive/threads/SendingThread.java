@@ -28,6 +28,6 @@ public class SendingThread extends Thread{
     public void sendMessage(String message, String username) throws IOException{
         out.writeBytes(message + "\n");
         out.writeBytes(username + "\n");
-        System.out.println("Messaggio inviato");
+        System.out.println("Messaggio inviato: " + message + ", username: " + username); 
     }
 }

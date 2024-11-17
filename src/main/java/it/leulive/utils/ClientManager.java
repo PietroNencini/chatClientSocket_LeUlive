@@ -2,6 +2,7 @@ package it.leulive.utils;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import it.leulive.threads.ListeningThread;
 import it.leulive.threads.SendingThread;
@@ -11,6 +12,7 @@ public class ClientManager {
     private static String clientUsername;
     private static SendingThread  s_thread;
     private static ListeningThread  l_thread;
+    ArrayList<String> known_users = new ArrayList<String>();
 
     /**
      * Da questo metodo viene inviata la richiesta di connessione al server e allo stesso tempo inizializzati i due thread base del client
