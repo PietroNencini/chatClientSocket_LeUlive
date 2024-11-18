@@ -16,15 +16,11 @@ public class PrimaryController {
      * @throws IOException Se ci sono problemi di connessione al server (server offline, porta o indirizzo errato ecc.)
     */
     @FXML private void startConnection() {
-        if(username.getText().length() >= 4)
-            try {
-                ClientManager.connectToServer(username.getText());
-            } catch(IOException e) {
-                error_alert.setContentText("Impossibile connettersi al server");
-            }
-        else 
-            error_alert.setContentText("Il nome utente deve contenere almeno 4 caratteri");
+        try {
+            ClientManager.connectToServer(username.getText());
+        } catch(IOException e) {
+            System.out.println("Qualcosa è andato storto nella connessione");
+            error_alert.setContentText("Errore nella connessione");
+        }
     }
-
-
 }
