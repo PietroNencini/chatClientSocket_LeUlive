@@ -28,7 +28,7 @@ public class ClientManager {
                 case ProtocolMessages.CONNECTION_ACCEPTED:
                     definitive_message += "Benvenuto nella chat " + clientUsername ;
                     break;
-                case ProtocolMessages.CONNECTION_REFUSEDED:
+                case ProtocolMessages.CONNECTION_REFUSED:
                     definitive_message += "Qualcosa è andato storto nella connessione. Controllare che l'username inserito sia valido e che il server sia al momento disponibile";
                     break;
 
@@ -45,6 +45,16 @@ public class ClientManager {
 
         definitive_message += " - " + LocalTime.now();              // Aggiungi la data di ricezione del messaggio
     }
+    
+    public static ArrayList<String> getKnown_users() {
+        return known_users;
+    }
+
+
+    public static void setKnown_users(ArrayList<String> known_users) {
+        ClientManager.known_users = known_users;
+    }
+
 
     /**
      * Da questo metodo viene inviata la richiesta di connessione al server e allo stesso tempo inizializzati i due thread base del client
