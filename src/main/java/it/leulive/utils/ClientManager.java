@@ -12,7 +12,17 @@ public class ClientManager {
     private static String clientUsername;
     private static SendingThread  s_thread;
     private static ListeningThread  l_thread;
-    ArrayList<String> known_users = new ArrayList<String>();
+    private static ArrayList<String> known_users = new ArrayList<String>();
+    
+    public static ArrayList<String> getKnown_users() {
+        return known_users;
+    }
+
+
+    public static void setKnown_users(ArrayList<String> known_users) {
+        ClientManager.known_users = known_users;
+    }
+
 
     /**
      * Da questo metodo viene inviata la richiesta di connessione al server e allo stesso tempo inizializzati i due thread base del client
@@ -25,6 +35,7 @@ public class ClientManager {
         l_thread = new ListeningThread(clientSocket);
         l_thread.start();
         s_thread.start();
+        
     }
 
 
