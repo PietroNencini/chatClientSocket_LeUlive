@@ -31,8 +31,12 @@ public class ListeningThread extends Thread{
         }
     }
 
+    /**
+     * Ascolta i dati in arrivo dal server della chat, tramite il Buffer di ingresso <br> Normalmente si ricevono 2 dati principali: <b> Mittente </b> e <b> Messaggio </b>. Quando però si riceve invece un messaggio di servizio che informa che un utente si è collegato o scollegato dalla chat, allora il mittente è il server (perché è un messaggio di servizio), ma si vuole sapere anche chi è tale utente, quindi si ha una terza componente del messaggio finale. 
+     * @return L'array di stringhe contenente le parti del messaggio, a meno che tale messaggio non sia di tipo speciale (come indicato prima), messaggio[2] è <b><code>null</code></b> e non deve essere guardato
+     * @throws IOException se ci sono problemi nella ricezione di dati dal server
+     */
     public String[] listen() throws IOException{
-
         String sender = in.readLine();
         String received_message = in.readLine();
         String extra_username = null;

@@ -38,13 +38,11 @@ public class SecondaryController {
     @FXML private void confirmMessage() {
         String msgText = msgContent.getText();
         if(singleChoice.isSelected()){
-            if(!(ClientManager.getKnown_users().contains(finalUser))){
+            if(!(ClientManager.getKnown_users().contains(finalUser.getText()))){
                 AnchorPane newPanelContent = new AnchorPane();
                 TitledPane pane = new TitledPane("World Pane", newPanelContent);
                 chat_container.getPanes().add(pane);
             }
         }
-        
-           
     }
 }

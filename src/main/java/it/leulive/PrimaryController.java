@@ -15,7 +15,7 @@ public class PrimaryController {
      * Metodo chiamato al momento in cui l'utente inserisce il proprio username, da qui viene chiamata la funzione di connessione al server
      * @throws IOException Se ci sono problemi di connessione al server (server offline, porta o indirizzo errato ecc.)
     */
-    @FXML private void startConnection() {
+    @FXML private void startConnection() throws Exception { 
         try {
             ClientManager.connectToServer(username.getText());
         } catch(IOException e) {
