@@ -10,7 +10,4 @@ public final class ProtocolMessages {                           // Inviata da:
     public static final String USER_JUST_CONNECTED = "#+";      // CLIENT/SERVER
     public static final String USER_JUST_DISCONNECTED = "#-";   // CLIENT/SERVER
     public static final String USER_NOT_FOUND = "#!";           // CLIENT/SERVER
-
-
-    
 }

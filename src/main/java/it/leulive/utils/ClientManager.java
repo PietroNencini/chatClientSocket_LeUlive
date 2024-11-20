@@ -5,23 +5,27 @@ import java.net.Socket;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+import it.leulive.SecondaryController;
 import it.leulive.threads.ListeningThread;
 import it.leulive.threads.SendingThread;
+import javafx.application.Platform;
 
 public class ClientManager {
 
+    private static Socket clientSocket;
     private static String clientUsername;
     private static SendingThread  s_thread;
     private static ListeningThread  l_thread;
     private static ArrayList<String> known_users = new ArrayList<String>(); // In questo arrayList ci vanno tutti gli utenti con cui si ha una chat privata aperta
+    private static SecondaryController chatController;
 
         /**
      * Da questo metodo viene inviata la richiesta di connessione al server e allo stesso tempo inizializzati i due thread base del client. <br> Finché il server non invia la conferma, il Thread per l'ascolto dei messaggi in arrivo non verrà attivato, pertanto non sarà ancora possibile procedere a inviare e ricevere messaggi
      * @param username Nome utente inserito da interfaccia grafica, che verrà inviato al server, per verificare la possibilità di poterlo usare come username proprio
      * @throws IOException
      */
-    public static void connectToServer(String username) throws Exception {
-        Socket clientSocket = new Socket(/*todo aggiungere ip e porta*/);
+    public static void connectToServer(String username) throws Exception {          
+        clientSocket = new Socket(/*todo aggiungere ip e porta*/);
         s_thread = new SendingThread(clientSocket);
         l_thread = new ListeningThread(clientSocket);
         s_thread.start();
@@ -38,13 +42,12 @@ public class ClientManager {
      *              <li> <i> Messaggio testuale </i> effettivo </li> 
      *              <li> <i> Username </i> dell'utente la cui richiesta di conn./disconn. - Presente solo nei messaggi di servizio di questo tipo (dato che di solito i messaggi sono divisi in due parti e non 3, in tal caso questo campo è <b>null</b>)  </li> </ul> 
      */
-    public static String receiveMessage(String[] msg) {
+    public static synchronized void receiveMessage(String[] msg) {
         String username = msg[0];
         String msg_content = msg[1];
         String extra_username = msg[2];                             //! ATTENZIONE: Può essere NULL
-
-        String definitive_message = username + ": ";
-                        // Stringa che contiene il messaggio finale da mostrare a livello grafico
+        boolean global = false;
+        String definitive_message = username + ": ";                // Stringa che contiene il messaggio finale da mostrare a livello grafico
         if(username.equals(ProtocolMessages.SERVER_USERNAME)) {     // Se il mittente è il server si tratta di un messaggio di protocollo
             switch(msg_content) {                                   // Dunque il contenuto del messaggio sarà di sicuro una stringa tra quelle conosciute
                 case ProtocolMessages.CONNECTION_ACCEPTED:
@@ -64,7 +67,7 @@ public class ClientManager {
             }
         } else if(username.startsWith("*")){                  // Se invece inizia per "*"
             username = username.substring(1);             // Si tratta di un messaggio globale (necessario saperlo per decidere su quale dei riquadri chat inserirlo)
-            //global_msg
+            global = true;
             definitive_message += msg_content;
         } else {                                                    // Se invece l'username è un altro mittente 
             if(!known_users.contains(username))                      // si tratta di un messaggio privato, controllo se conosco e ho una chat già aperta con questo utente
@@ -73,9 +76,23 @@ public class ClientManager {
         }
 
         definitive_message += " - " + LocalTime.now() + "\n";              // Aggiungi la data di ricezione del messaggio
-        return definitive_message;
+        final String MESSAGE = definitive_message;                                      // Per poter inviare al controller questi due dati è necessario renderli delle costanti
+        final boolean GLOBAL_MESSAGE = global;                                          // (Per esigenza di JavaFX)
+        Platform.runLater(() -> chatController.appendMessage(MESSAGE, GLOBAL_MESSAGE));
+    }    
+    /**
+     * Chiama il Thread di invio già in esecuzione per inviare un messaggio, seguendo lo standard del protocollo
+     * @param username Nome utente destinatario 
+     * @param msg_text Testo del messaggio
+     */
+    public static void sendMessage(String username, String msg_text) {
+        try {
+            s_thread.sendMessage(username, msg_text);
+        } catch(IOException e) {
+            System.out.println("Ci sono problemi nell'invio di messaggi");
+        }
     }
-    
+
     public static ArrayList<String> getKnown_users() {
         return known_users;
     }
@@ -88,6 +105,12 @@ public class ClientManager {
         clientUsername = username;
     }
 
+    public static void setChatController(SecondaryController chatController) {
+        ClientManager.chatController = chatController;
+    }
 
+    public static SecondaryController getChatController() {
+        return chatController;
+    }
 
 }

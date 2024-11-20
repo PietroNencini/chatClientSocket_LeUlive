@@ -54,10 +54,10 @@ public class SendingThread extends Thread{
     }
 
     /**
-     * Funzione che invia un messaggio al server affinché sia ricevuto dai client destinatari
-     * @param message Messaggio effettivo
-     * @param type <b>"*"<b> per inviare a tutti, altrimenti digitare l'username del destinatario specifico
-     * @throws IOException se avvengono problemi nell'invio di dati
+     * Come prevede il protocollo <i> LeUlive </i>, per inviare un messaggio standard al server (che poi lo girerà ai destinatari desiderati), il client deve inviare username del destinatario e messaggio effettivo da scrivere
+     * @param username Username del destinatario ("*" per inviare a tutti)
+     * @param message Corpo testuale del messaggio effettivo
+     * @throws IOException se ci sono problemi nell'invio
      */
     public void sendMessage(String username, String message) throws IOException{
         out.writeBytes(message + "\n");

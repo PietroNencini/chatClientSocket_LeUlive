@@ -16,11 +16,17 @@ public class PrimaryController {
      * @throws IOException Se ci sono problemi di connessione al server (server offline, porta o indirizzo errato ecc.)
     */
     @FXML private void startConnection() throws Exception { 
+        boolean hasConnected = false;
         try {
             ClientManager.connectToServer(username.getText());
         } catch(IOException e) {
             System.out.println("Qualcosa è andato storto nella connessione");
             error_alert.setContentText("Errore nella connessione");
+            error_alert.show();
+        } 
+        if(hasConnected) {
+            App.openChatView();
         }
+        
     }
 }
