@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import it.leulive.utils.ClientManager;
 import it.leulive.utils.ProtocolMessages;
 
 
@@ -27,7 +28,11 @@ public class SendingThread extends Thread{
 
     @Override
     public void run() {
-        System.out.println("Questo thread è pronto a inviare messaggi");
+        try {
+            sendConnectionRequestMessage(ClientManager.getClient_username());
+        } catch(IOException e) {
+            System.out.println("ERRORE: Server non raggiungibile");
+        }
     }
 
     /**

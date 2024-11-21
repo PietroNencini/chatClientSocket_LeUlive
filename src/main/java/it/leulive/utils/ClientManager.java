@@ -19,6 +19,7 @@ public class ClientManager {
     private static ArrayList<String> known_users = new ArrayList<String>(); // In questo arrayList ci vanno tutti gli utenti con cui si ha una chat privata aperta
     private static SecondaryController chatController;
 
+
         /**
      * Da questo metodo viene inviata la richiesta di connessione al server e allo stesso tempo inizializzati i due thread base del client. <br> Finché il server non invia la conferma, il Thread per l'ascolto dei messaggi in arrivo non verrà attivato, pertanto non sarà ancora possibile procedere a inviare e ricevere messaggi
      * @param username Nome utente inserito da interfaccia grafica, che verrà inviato al server, per verificare la possibilità di poterlo usare come username proprio
@@ -28,10 +29,8 @@ public class ClientManager {
         clientSocket = new Socket(/*todo aggiungere ip e porta*/);
         s_thread = new SendingThread(clientSocket);
         l_thread = new ListeningThread(clientSocket);
+        setClient_username(username);
         s_thread.start();
-        while(!s_thread.checkIfCanProceed()) {
-            Thread.currentThread().sleep(50);
-        }
         l_thread.start();
     }
 
@@ -97,11 +96,11 @@ public class ClientManager {
         return known_users;
     }
 
-    public String getClient_username() {
+    public static String getClient_username() {
         return clientUsername;
     }
 
-    public void setClient_username(String username) {
+    public static void setClient_username(String username) {
         clientUsername = username;
     }
 
