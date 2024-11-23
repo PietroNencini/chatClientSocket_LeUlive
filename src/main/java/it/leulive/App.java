@@ -19,7 +19,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        scene = new Scene(loadFXML("primary"), 1600, 1200);
         stage.setTitle("Applicazione Chat");
         stage.setScene(scene);
         stage.show();
@@ -36,13 +36,16 @@ public class App extends Application {
 
     public static void openChatView() throws IOException {
         FXMLLoader loader = new FXMLLoader(App.class.getResource("secondary.fxml"));
+        System.out.println(App.class.getResource("secondary.fxml"));
         Parent root = loader.load();
         SecondaryController c = loader.getController();
         ClientManager.setChatController(c);
-        setRoot("secondary.fxml");
+        setRoot("secondary");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        ClientManager.inizializedSocket();
+        ClientManager.startThread();
         launch();
     }
 

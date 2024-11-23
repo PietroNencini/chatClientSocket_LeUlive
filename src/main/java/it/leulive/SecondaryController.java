@@ -18,31 +18,40 @@ import javafx.scene.control.Alert.AlertType;
 
 public class SecondaryController {
 
-    // Questo è il controller della view sulla chat   
-    @FXML private TextArea msgContent;
-    @FXML private RadioButton singleChoice;
-    @FXML private RadioButton globalChoice;
-    @FXML private TextField finalUser;
-    @FXML private Alert invalid_msg = new Alert(AlertType.ERROR);
-    @FXML private Accordion chat_container;
+    // Questo è il controller della view sulla chat
+    @FXML
+    private TextArea msgContent;
+    @FXML
+    private RadioButton singleChoice;
+    @FXML
+    private RadioButton globalChoice;
+    @FXML
+    private TextField finalUser;
+    @FXML
+    private Alert invalid_msg = new Alert(AlertType.ERROR);
+    @FXML
+    private Accordion chat_container;
 
     HashMap<String, TitledPane> privateUsers = new HashMap<String, TitledPane>();
 
-    @FXML private void exit() {
-        ClientManager.sendMessage("server", "/!");  // Destinatario server in quanto messaggio di protocollo
+    @FXML
+    private void exit() {
+        ClientManager.sendMessage("server", "/!"); // Destinatario server in quanto messaggio di protocollo
         try {
             ClientManager.disconnectFromServer();
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("Non sono riuscito a disconnettermi dal server");
         }
         System.exit(0);
     }
 
-    @FXML private void enableFinalUser() {
+    @FXML
+    private void enableFinalUser() {
         finalUser.setDisable(false);
     }
 
-    @FXML private void disableFinalUser() {
+    @FXML
+    private void disableFinalUser() {
         finalUser.setDisable(true);
     }
 
@@ -51,10 +60,10 @@ public class SecondaryController {
         TextArea textArea = Utils.createTextArea(message.startsWith("server"));
         String msgUsername = message.split(":")[0];
         AnchorPane message_space;
-        if(global) {
+        if (global) {
             message_space = (AnchorPane) chat_container.getPanes().get(0).getContent();
             message_space.getChildren().add(textArea);
-        } else if(privateUsers.containsKey(msgUsername)) {
+        } else if (privateUsers.containsKey(msgUsername)) {
             message_space = (AnchorPane) privateUsers.get(privateUsers.get(msgUsername)).getContent();
             message_space.getChildren().add(textArea);
         } else {
@@ -66,11 +75,17 @@ public class SecondaryController {
         }
     }
 
-    @FXML private void confirmMessage() {
-        String destText = finalUser.getText();
+    @FXML
+    private void confirmMessage() {
+        String destText;
         String msgText = msgContent.getText();
+        if (singleChoice.isSelected()) {
+            destText = finalUser.getText();
+        } else {
+            destText = "*";
+        }
         int result = Utils.checkIfValidMessage(destText, msgText);
-        switch(result) {
+        switch (result) {
             case -1:
                 invalid_msg.setHeaderText("ERRORE");
                 invalid_msg.setContentText("Il destinatario inserito non è valido");
@@ -84,15 +99,13 @@ public class SecondaryController {
             default:
                 System.out.println("Messaggio valido");
         }
-        if(singleChoice.isSelected()){                                                  
-            if(!(ClientManager.getKnown_users().contains(destText))){        // Se non conosco aggiungo la chat privata
+        if (singleChoice.isSelected()) {
+            if (!(ClientManager.getKnown_users().contains(destText))) { // Se non conosco aggiungo la chat privata
                 AnchorPane newPanelContent = new AnchorPane();
                 TitledPane pane = new TitledPane(destText, newPanelContent);
                 chat_container.getPanes().add(pane);
             }
-            ClientManager.sendMessage(destText, msgText); 
-        } else {
-            ClientManager.sendMessage(ProtocolMessages.GLOBAL_MESSAGE, msgText);
         }
+        ClientManager.sendMessage(destText, msgText);
     }
 }

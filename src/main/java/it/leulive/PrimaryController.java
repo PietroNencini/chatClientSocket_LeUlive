@@ -9,24 +9,30 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class PrimaryController {
-    @FXML private TextArea username;
-    @FXML private Alert error_alert = new Alert(AlertType.ERROR, "ERRORE DI CONNESSIONE");
-    
+    @FXML
+    private TextArea username;
+    @FXML
+    private Alert error_alert = new Alert(AlertType.ERROR, "ERRORE DI CONNESSIONE");
+
     /**
-     * Metodo chiamato al momento in cui l'utente inserisce il proprio username, da qui viene chiamata la funzione di connessione al server
-     * @throws IOException Se ci sono problemi di connessione al server (server offline, porta o indirizzo errato ecc.)
-    */
-    @FXML private void startConnection() throws Exception { 
+     * Metodo chiamato al momento in cui l'utente inserisce il proprio username, da
+     * qui viene chiamata la funzione di connessione al server
+     * 
+     * @throws IOException Se ci sono problemi di connessione al server (server
+     *                     offline, porta o indirizzo errato ecc.)
+     */
+    @FXML
+    private void startConnection() throws Exception {
         try {
             ClientManager.connectToServer(username.getText());
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("Qualcosa è andato storto nella connessione");
             error_alert.setContentText("Errore nella connessione");
             error_alert.show();
-        } 
-        while(!ClientManager.isConnected()) {
+        }
+        while (!ClientManager.isConnected()) {
             Thread.currentThread().sleep(50);
         }
-        App.openChatView();        
+        App.openChatView();
     }
 }
