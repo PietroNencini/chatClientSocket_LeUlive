@@ -18,20 +18,26 @@ public class ClientManager {
     private static ListeningThread  l_thread;
     private static ArrayList<String> known_users = new ArrayList<String>(); // In questo arrayList ci vanno tutti gli utenti con cui si ha una chat privata aperta
     private static SecondaryController chatController;
-
+    private static boolean connectedWithServer = false;
 
         /**
      * Da questo metodo viene inviata la richiesta di connessione al server e allo stesso tempo inizializzati i due thread base del client. <br> Finché il server non invia la conferma, il Thread per l'ascolto dei messaggi in arrivo non verrà attivato, pertanto non sarà ancora possibile procedere a inviare e ricevere messaggi
      * @param username Nome utente inserito da interfaccia grafica, che verrà inviato al server, per verificare la possibilità di poterlo usare come username proprio
      * @throws IOException
      */
-    public static void connectToServer(String username) throws Exception {          
+    public static void connectToServer(String username) throws IOException {          
         clientSocket = new Socket(/*todo aggiungere ip e porta*/);
         s_thread = new SendingThread(clientSocket);
         l_thread = new ListeningThread(clientSocket);
         setClient_username(username);
         s_thread.start();
         l_thread.start();
+    }
+
+    public static void disconnectFromServer() throws IOException {
+        s_thread.interrupt();
+        l_thread.interrupt();
+        clientSocket.close();
     }
 
     /**
@@ -41,7 +47,7 @@ public class ClientManager {
      *              <li> <i> Messaggio testuale </i> effettivo </li> 
      *              <li> <i> Username </i> dell'utente la cui richiesta di conn./disconn. - Presente solo nei messaggi di servizio di questo tipo (dato che di solito i messaggi sono divisi in due parti e non 3, in tal caso questo campo è <b>null</b>)  </li> </ul> 
      */
-    public static synchronized void receiveMessage(String[] msg) {
+    public static synchronized void receiveMessage(String[] msg) throws IOException {
         String username = msg[0];
         String msg_content = msg[1];
         String extra_username = msg[2];                             //! ATTENZIONE: Può essere NULL
@@ -51,9 +57,12 @@ public class ClientManager {
             switch(msg_content) {                                   // Dunque il contenuto del messaggio sarà di sicuro una stringa tra quelle conosciute
                 case ProtocolMessages.CONNECTION_ACCEPTED:
                     definitive_message += "Benvenuto nella chat " + clientUsername ;
+                    connectedWithServer = true;
                     break;
                 case ProtocolMessages.CONNECTION_REFUSED:
                     definitive_message += "Qualcosa è andato storto nella connessione. Controllare che l'username inserito sia valido e che il server sia al momento disponibile";
+                    connectedWithServer = false;
+                    disconnectFromServer();
                     break;
                 case ProtocolMessages.USER_JUST_CONNECTED:
                     definitive_message += extra_username + " si è unito alla chat!";
@@ -85,11 +94,7 @@ public class ClientManager {
      * @param msg_text Testo del messaggio
      */
     public static void sendMessage(String username, String msg_text) {
-        try {
-            s_thread.sendMessage(username, msg_text);
-        } catch(IOException e) {
-            System.out.println("Ci sono problemi nell'invio di messaggi");
-        }
+        s_thread.enqueueMessage(username + ":" + msg_text);
     }
 
     public static ArrayList<String> getKnown_users() {
@@ -110,6 +115,10 @@ public class ClientManager {
 
     public static SecondaryController getChatController() {
         return chatController;
+    }
+
+    public static boolean isConnected() {
+        return connectedWithServer;
     }
 
 }

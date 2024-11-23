@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import it.leulive.utils.ClientManager;
 import it.leulive.utils.ProtocolMessages;
@@ -13,7 +14,7 @@ import it.leulive.utils.ProtocolMessages;
 public class SendingThread extends Thread{
     private Socket clientSocket;
     private DataOutputStream out;
-    private boolean confirm_received;
+    private ArrayList<String> messageQueue;
 
     /**
      * ACrea il Thread di invio messaggi 
@@ -23,30 +24,50 @@ public class SendingThread extends Thread{
     public SendingThread(Socket s) throws IOException{
         this.clientSocket = s;
         this.out = new DataOutputStream(clientSocket.getOutputStream());
-        this.confirm_received = false;
+        this.messageQueue = new ArrayList<String>(20);
     }
-
+    
     @Override
     public void run() {
+        System.out.println("Pronto a connettermi al server");
         try {
             sendConnectionRequestMessage(ClientManager.getClient_username());
         } catch(IOException e) {
-            System.out.println("ERRORE: Server non raggiungibile");
+            System.out.println("ERRORE: Server non raggiungibile o username invalido!");
+            return;
+        } 
+        System.out.println("Connessione effettuata - pronto a inviare messaggi");
+        while(this.isAlive() && ClientManager.isConnected()) {
+            synchronized (messageQueue) {
+                while(!messageQueue.isEmpty()) {
+                    String msg = messageQueue.remove(0);
+                    String[] msg_parts = msg.split(":");
+                    try {
+                        out.writeBytes(msg_parts[0]);   //  Username
+                        out.writeBytes(msg_parts[1]);   //  Testo del messaggio
+                    } catch(IOException e) {
+                        System.out.println("Non sono riuscito a inviare questo messaggio");
+                    }
+                }                    
+            }
         }
     }
 
     /**
-     * Controlla se si ha terminato la fase di connessione col server, quindi se è possibile iniziare a ricevere messaggi dalla chat
-     * @return true se la connessione è già avvenuta
+     * Inserisce un messaggio digitato dall'utente nella coda di messaggi, appena sarà possibile per il Thread, verrà inviato immediatamente
+     * @param msg messaggio da inserire nella
      */
-    public boolean checkIfCanProceed() {
-        return confirm_received;
+    public void enqueueMessage(String msg) {
+        synchronized (messageQueue) {
+            messageQueue.add(msg);
+        }
     }
 
+    //todo modificare
     /** 
      * Invia al server la richiesta iniziale di connessione, come previsto dal protocollo <i> LeUlive </i>. Fintanto che il client non riesce a connettersi al server, non viene permesso di proseguire nell'esecuzione, quindi di inizializzare il Thread di ricezione.
     */
-    public void sendConnectionRequestMessage(String username) throws IOException{
+    private void sendConnectionRequestMessage(String username) throws IOException{
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));       // Il thread di ricezione non è stato ancora creato quando viene chiamata questa funzione, dunque non è possibile ricevere la conferma di ingresso nella chat dal server senza che ci sia un buffer di ricezione a parte.
         out.writeBytes(ProtocolMessages.SERVER_USERNAME + "\n");            // Il protocollo prevede di inviare il nome utente del server
         out.writeBytes(ProtocolMessages.CONNECTION_REQUEST + "\n");         // seguito dal messaggio specifico di richiesta
@@ -55,18 +76,6 @@ public class SendingThread extends Thread{
             out.writeBytes(username);                                       // Infine si invia l'username finché il server non ci dice che quello scelto va bene (alcuni username non sono possibili, ad esempio "server")
             response = in.readLine();
         } while(response.equals(ProtocolMessages.CONNECTION_REFUSED));
-        confirm_received = true;
     }
 
-    /**
-     * Come prevede il protocollo <i> LeUlive </i>, per inviare un messaggio standard al server (che poi lo girerà ai destinatari desiderati), il client deve inviare username del destinatario e messaggio effettivo da scrivere
-     * @param username Username del destinatario ("*" per inviare a tutti)
-     * @param message Corpo testuale del messaggio effettivo
-     * @throws IOException se ci sono problemi nell'invio
-     */
-    public void sendMessage(String username, String message) throws IOException{
-        out.writeBytes(message + "\n");
-        out.writeBytes(username + "\n");
-        System.out.println("Messaggio inviato: " + message + ", username: " + username); 
-    }
 }

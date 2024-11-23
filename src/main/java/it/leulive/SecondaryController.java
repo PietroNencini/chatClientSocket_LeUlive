@@ -1,5 +1,6 @@
 package it.leulive;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import it.leulive.utils.ClientManager;
@@ -28,6 +29,11 @@ public class SecondaryController {
 
     @FXML private void exit() {
         ClientManager.sendMessage("server", "/!");  // Destinatario server in quanto messaggio di protocollo
+        try {
+            ClientManager.disconnectFromServer();
+        } catch(IOException e) {
+            System.out.println("Non sono riuscito a disconnettermi dal server");
+        }
         System.exit(0);
     }
 
@@ -59,7 +65,6 @@ public class SecondaryController {
         }
     }
 
-
     @FXML private void confirmMessage() {
         String msgText = msgContent.getText();
         if(singleChoice.isSelected()){                                                  
@@ -85,5 +90,6 @@ public class SecondaryController {
             }
         }
     }
+
 
 }
