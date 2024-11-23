@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import it.leulive.utils.ClientManager;
-import it.leulive.utils.GraphicUtils;
+import it.leulive.utils.ProtocolMessages;
+import it.leulive.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -47,7 +48,7 @@ public class SecondaryController {
 
     @FXML
     public void appendMessage(String message, boolean global) {
-        TextArea textArea = GraphicUtils.createTextArea(message.startsWith("server"));
+        TextArea textArea = Utils.createTextArea(message.startsWith("server"));
         String msgUsername = message.split(":")[0];
         AnchorPane message_space;
         if(global) {
@@ -66,30 +67,32 @@ public class SecondaryController {
     }
 
     @FXML private void confirmMessage() {
+        String destText = finalUser.getText();
         String msgText = msgContent.getText();
-        if(singleChoice.isSelected()){                                                  
-            if(!(ClientManager.getKnown_users().contains(finalUser.getText()))){
-                AnchorPane newPanelContent = new AnchorPane();
-                TitledPane pane = new TitledPane("World Pane", newPanelContent);
-                chat_container.getPanes().add(pane);
-            } 
-            
-        } else {
-            if(finalUser.getText().isEmpty()){
-                invalid_msg.setHeaderText("Invalid Message");
-                invalid_msg.setContentText("Username cannot be empty.");
+        int result = Utils.checkIfValidMessage(destText, msgText);
+        switch(result) {
+            case -1:
+                invalid_msg.setHeaderText("ERRORE");
+                invalid_msg.setContentText("Il destinatario inserito non è valido");
                 invalid_msg.showAndWait();
                 return;
-            } else {
-                if(msgText.isEmpty()){
-                    invalid_msg.setHeaderText("Invalid Message");
-                    invalid_msg.setContentText("Message cannot be empty.");
-                    invalid_msg.showAndWait();
-                    return;
-                }
+            case -2:
+                invalid_msg.setHeaderText("ERRORE");
+                invalid_msg.setContentText("Il messaggio non può essere vuoto");
+                invalid_msg.showAndWait();
+                return;
+            default:
+                System.out.println("Messaggio valido");
+        }
+        if(singleChoice.isSelected()){                                                  
+            if(!(ClientManager.getKnown_users().contains(destText))){        // Se non conosco aggiungo la chat privata
+                AnchorPane newPanelContent = new AnchorPane();
+                TitledPane pane = new TitledPane(destText, newPanelContent);
+                chat_container.getPanes().add(pane);
             }
+            ClientManager.sendMessage(destText, msgText); 
+        } else {
+            ClientManager.sendMessage(ProtocolMessages.GLOBAL_MESSAGE, msgText);
         }
     }
-
-
 }
