@@ -24,7 +24,9 @@ public class PrimaryController {
             error_alert.setContentText("Errore nella connessione");
             error_alert.show();
         } 
-        if(ClientManager.isConnected())
-            App.openChatView();        
+        while(!ClientManager.isConnected()) {
+            Thread.currentThread().sleep(50);
+        }
+        App.openChatView();        
     }
 }

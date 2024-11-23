@@ -26,7 +26,7 @@ public class ClientManager {
      * @throws IOException
      */
     public static void connectToServer(String username) throws IOException {          
-        clientSocket = new Socket(/*todo aggiungere ip e porta*/);
+        clientSocket = new Socket("localhost", 7934);
         s_thread = new SendingThread(clientSocket);
         l_thread = new ListeningThread(clientSocket);
         setClient_username(username);
