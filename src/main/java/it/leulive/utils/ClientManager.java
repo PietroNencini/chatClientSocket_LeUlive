@@ -1,144 +1,114 @@
 package it.leulive.utils;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 import it.leulive.SecondaryController;
 import it.leulive.threads.ListeningThread;
-import it.leulive.threads.SendingThread;
 import javafx.application.Platform;
 
 public class ClientManager {
 
     private static Socket clientSocket;
     private static String clientUsername;
-    private static SendingThread s_thread;
     private static ListeningThread l_thread;
     private static ArrayList<String> known_users = new ArrayList<String>(); // In questo arrayList ci vanno tutti gli
                                                                             // utenti con cui si ha una chat privata
                                                                             // aperta
     private static SecondaryController chatController;
     private static boolean connectedWithServer = false;
+    private static DataOutputStream out;
 
     /**
-     * Da questo metodo viene inviata la richiesta di connessione al server e allo
-     * stesso tempo inizializzati i due thread base del client. <br>
-     * Finché il server non invia la conferma, il Thread per l'ascolto dei messaggi
-     * in arrivo non verrà attivato, pertanto non sarà ancora possibile procedere a
-     * inviare e ricevere messaggi
+     * Da questo metodo vengono inizializzati i due thread base del client.
      * 
-     * @param username Nome utente inserito da interfaccia grafica, che verrà
-     *                 inviato al server, per verificare la possibilità di poterlo
-     *                 usare come username proprio
      * @throws IOException
      */
     public static void startThread() throws IOException {
-        s_thread = new SendingThread(clientSocket);
         l_thread = new ListeningThread(clientSocket);
-        s_thread.start();
         l_thread.start();
     }
 
-    public static void inizializedSocket() throws IOException {
+    public static void inizializeSocket() throws IOException {
         clientSocket = new Socket("localhost", 7934);
+        out = new DataOutputStream(clientSocket.getOutputStream());
     }
 
     public static void disconnectFromServer() throws IOException {
-        closeThread();
+        l_thread.interrupt();
         clientSocket.close();
     }
 
-    public static void closeThread() throws IOException {
-        s_thread.interrupt();
-        l_thread.interrupt();
-    }
-
     /**
-     * Metodo che prende i messaggi in arrivo dal <b> Receiving Thread </b> e si
+     * Metodo che prende i messaggi in arrivo dal Receiving Thread e si
      * occupa in automatico di riconoscere di che tipo si trattano, quindi cosa
      * farne poi a livello grafico
      * 
      * @param msg Array contenente le 3 parti fondamentali del messaggio:
-     *            <ul>
-     *            <li><i>Username</i> del mittente ("server" se si tratta di un
-     *            messaggio di protocollo/servizio)</li>
-     *            <li><i> Messaggio testuale </i> effettivo</li>
-     *            <li><i> Username </i> dell'utente la cui richiesta di
-     *            conn./disconn. - Presente solo nei messaggi di servizio di questo
-     *            tipo (dato che di solito i messaggi sono divisi in due parti e non
-     *            3, in tal caso questo campo è <b>null</b>)</li>
-     *            </ul>
+     *            - Username destinatario ("server" se si tratta di un messaggio di
+     *            protocollo/servizio)
+     *            - Messaggio testuale effettivo
+     *            - Username del mittente
      */
-    public static synchronized void receiveMessage(String[] msg) throws IOException {
-        String username = msg[0];
-        String msg_content = msg[1];
-        String extra_username = msg[2]; // ! ATTENZIONE: Può essere NULL
+
+    public static synchronized void receiveMessage(String receiver, String msg_content, String sender)
+            throws IOException {
         boolean global = false;
-        String definitive_message = username + ": "; // Stringa che contiene il messaggio finale da mostrare a livello
-                                                     // grafico
-        if (username.equals(ProtocolMessages.SERVER_USERNAME)) { // Se il mittente è il server si tratta di un messaggio
-                                                                 // di protocollo
-            switch (msg_content) { // Dunque il contenuto del messaggio sarà di sicuro una stringa tra quelle
-                                   // conosciute
-                case ProtocolMessages.CONNECTION_ACCEPTED:
-                    definitive_message += "Benvenuto nella chat " + clientUsername;
-                    connectedWithServer = true;
-                    break;
-                case ProtocolMessages.CONNECTION_REFUSED:
-                    definitive_message += "Qualcosa è andato storto nella connessione. Controllare che l'username inserito sia valido e che il server sia al momento disponibile";
-                    connectedWithServer = false;
-                    // closeThread();
-                    break;
+        String definitive_message = receiver + ": "; // Stringa che contiene il messaggio da mostrare a livello grafico
+        if (receiver.equals(ProtocolMessages.SERVER_USERNAME)) {
+            switch (msg_content) {
                 case ProtocolMessages.USER_JUST_CONNECTED:
-                    definitive_message += extra_username + " si è unito alla chat!";
+                    definitive_message += sender + " si è unito alla chat!";
+                    break;
                 case ProtocolMessages.USER_JUST_DISCONNECTED:
-                    definitive_message += extra_username + " è uscito dalla chat";
+                    definitive_message += sender + " è uscito dalla chat";
+                    break;
                 case ProtocolMessages.USER_NOT_FOUND:
-                    definitive_message += extra_username + " - username non esistente";
+                    definitive_message += sender + " - username non esistente";
+                    break;
                 default:
                     System.out.println("Messaggio non riconosciuto");
             }
-        } else if (username.startsWith("*")) { // Se invece inizia per "*"
-            username = username.substring(1); // Si tratta di un messaggio globale (necessario saperlo per decidere su
+        } else if (receiver.startsWith("*")) { // Se invece inizia per "*"
+            receiver = receiver.substring(1); // Si tratta di un messaggio globale (necessario saperlo per decidere su
                                               // quale dei riquadri chat inserirlo)
             global = true;
             definitive_message += msg_content;
         } else { // Se invece l'username è un altro mittente
-            if (!known_users.contains(username)) // si tratta di un messaggio privato, controllo se conosco e ho una
-                                                 // chat già aperta con questo utente
-                known_users.add(username);
+            if (!known_users.contains(receiver) && !msg_content.equals(ProtocolMessages.USER_NOT_FOUND)) {
+                known_users.add(receiver);
+            }
             definitive_message += msg_content;
         }
-
-        definitive_message += " - " + LocalTime.now() + "\n"; // Aggiungi la data di ricezione del messaggio
-        final String MESSAGE = definitive_message; // Per poter inviare al controller questi due dati è necessario
-                                                   // renderli delle costanti
-        final boolean GLOBAL_MESSAGE = global; // (Per esigenza di JavaFX)
+        definitive_message += "  " + LocalTime.now() + "\n";
+        // Per poter inviare al controller questi due dati è necessario renderli delle
+        // costanti
+        final String MESSAGE = definitive_message;
+        final boolean GLOBAL_MESSAGE = global;
         Platform.runLater(() -> chatController.appendMessage(MESSAGE, GLOBAL_MESSAGE));
     }
 
-    /**
-     * Chiama il Thread di invio già in esecuzione per inviare un messaggio,
-     * seguendo lo standard del protocollo
-     * 
-     * @param username Nome utente destinatario
-     * @param msg_text Testo del messaggio
-     */
-    public static void sendMessage(String username, String msg_text) {
-        s_thread.enqueueMessage(username + ":" + msg_text);
+    public static void sendMessage(String dest, String msg) throws IOException {
+        out.writeBytes(dest + "\n"); // Username del destinatario
+        out.writeBytes(msg + "\n");
     }
 
-    public static void connectToServer(String username) throws IOException {
-        DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
-        out.writeBytes(ProtocolMessages.SERVER_USERNAME + "\n"); // Il protocollo prevede di inviare il nome utente del
-                                                                 // server
-        out.writeBytes(ProtocolMessages.CONNECTION_REQUEST + "\n"); // seguito dal messaggio specifico di richiesta
-        out.writeBytes(username + "\n"); // Infine si invia l'username finché il server non ci dice che quello
-                                         // scelto va
-        // bene (alcuni username non sono possibili, ad esempio "server")
+    public static boolean isUsernameValid() throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        String response = in.readLine();
+        System.out.println(response);
+        return (response.equals(ProtocolMessages.CONNECTION_ACCEPTED));
+    }
+
+    public static void sendUsername(String username) throws IOException {
+        out.writeBytes(ProtocolMessages.SERVER_USERNAME + "\n"); // Nome utente del server
+        out.writeBytes(ProtocolMessages.CONNECTION_REQUEST + "\n"); // Seguito dal messaggio specifico di richiesta
+        out.writeBytes(username + "\n"); // Username che si vuole utilizzare
         clientUsername = username;
     }
 
@@ -164,6 +134,10 @@ public class ClientManager {
 
     public static boolean isConnected() {
         return connectedWithServer;
+    }
+
+    public static void addKnownUser(String username) {
+        ClientManager.known_users.add(username);
     }
 
 }

@@ -5,14 +5,13 @@ import java.io.IOException;
 import it.leulive.utils.ClientManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 
 public class PrimaryController {
     @FXML
     private TextArea username;
     @FXML
-    private Alert error_alert = new Alert(AlertType.ERROR, "ERRORE DI CONNESSIONE");
+    private Label error_text;
 
     /**
      * Metodo chiamato al momento in cui l'utente inserisce il proprio username, da
@@ -24,15 +23,15 @@ public class PrimaryController {
     @FXML
     private void startConnection() throws Exception {
         try {
-            ClientManager.connectToServer(username.getText());
+            ClientManager.sendUsername(username.getText());
         } catch (IOException e) {
             System.out.println("Qualcosa è andato storto nella connessione");
-            error_alert.setContentText("Errore nella connessione");
-            error_alert.show();
         }
-        while (!ClientManager.isConnected()) {
-            Thread.currentThread().sleep(50);
+        if (ClientManager.isUsernameValid()) {
+            ClientManager.startThread();
+            App.openChatView();
+        } else {
+            error_text.setText("Inserire un altro username!");
         }
-        App.openChatView();
     }
 }

@@ -10,16 +10,13 @@ import java.io.IOException;
 
 import it.leulive.utils.ClientManager;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     private static Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 1600, 1200);
+        scene = new Scene(loadFXML("primary"), 900, 600);
         stage.setTitle("Applicazione Chat");
         stage.setScene(scene);
         stage.show();
@@ -44,8 +41,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) throws IOException {
-        ClientManager.inizializedSocket();
-        ClientManager.startThread();
+        ClientManager.inizializeSocket();
         launch();
     }
 
