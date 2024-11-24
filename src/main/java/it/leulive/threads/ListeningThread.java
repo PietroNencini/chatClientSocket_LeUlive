@@ -34,11 +34,13 @@ public class ListeningThread extends Thread {
             do {
                 String sender = in.readLine();
                 String received_message = in.readLine();
+                System.out.println(sender);
                 System.out.println(received_message);
                 String extra_username = null;
                 if (sender.equals(ProtocolMessages.SERVER_USERNAME)
                         && ((received_message.equals(ProtocolMessages.USER_JUST_CONNECTED)
-                                || received_message.equals(ProtocolMessages.USER_JUST_DISCONNECTED)))) {
+                                || received_message.equals(ProtocolMessages.USER_JUST_DISCONNECTED)
+                                || received_message.equals(ProtocolMessages.USER_NOT_FOUND)))) {
                     extra_username = in.readLine();
                 }
                 ClientManager.receiveMessage(sender, received_message, extra_username);

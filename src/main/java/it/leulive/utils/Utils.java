@@ -1,23 +1,22 @@
 package it.leulive.utils;
 
-import javafx.scene.control.TextArea;
-import javafx.scene.text.Font;
-
 public class Utils {
 
-    public static TextArea createTextArea(boolean fromServer) {
-        TextArea textArea = new TextArea();
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setPrefWidth(250);
-        textArea.setPrefHeight(200);
-        textArea.setFont(new Font("System", 15));
-        textArea.setStyle("-fx-padding: 12 0;");
-        if (fromServer) {
-            textArea.setStyle(textArea.getStyle() + "-fx-background-color: cyan;");
-        }
-        return textArea;
-    }
+    /*
+     * public static TextArea createTextArea(boolean fromServer) {
+     * TextArea textArea = new TextArea();
+     * textArea.setEditable(false);
+     * textArea.setWrapText(true);
+     * textArea.setPrefWidth(100);
+     * textArea.setPrefHeight(50);
+     * textArea.setFont(new Font("System", 15));
+     * textArea.setStyle("-fx-padding: 12 0;");
+     * if (fromServer) {
+     * textArea.setStyle(textArea.getStyle() + "-fx-background-color: cyan;");
+     * }
+     * return textArea;
+     * }
+     */
 
     /**
      * A livello client viene controllato che il messaggio e il suo destinatario non

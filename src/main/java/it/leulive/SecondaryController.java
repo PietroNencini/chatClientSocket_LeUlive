@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import it.leulive.utils.ClientManager;
+import it.leulive.utils.ProtocolMessages;
 import it.leulive.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert.AlertType;
 
@@ -57,23 +58,23 @@ public class SecondaryController {
 
     @FXML
     public void appendMessage(String message, boolean global) {
-        TextArea textArea = Utils.createTextArea(message.startsWith("server"));
+        System.out.println(message);
+        Label label = new Label(message);
         String msgUsername = message.split(":")[0];
-        VBox message_space;
-        // da controllare
+        VBox newPanelContent;
         if (global) {
-            message_space = (VBox) chat_container.getPanes().get(0).getContent();
-            message_space.getChildren().add(textArea);
-        } else if (privateUsers.containsKey(msgUsername)) {
-            message_space = (VBox) privateUsers.get(privateUsers.get(msgUsername)).getContent();
-            message_space.getChildren().add(textArea);
-        } else {
-            VBox newPanelContent = new VBox();
-            newPanelContent.getChildren().add(textArea);
+            newPanelContent = (VBox) chat_container.getPanes().get(0).getContent();
+        } else if (!ClientManager.getKnown_users().contains(msgUsername)) {
+            newPanelContent = new VBox();
             TitledPane pane = new TitledPane(msgUsername, newPanelContent);
-            privateUsers.put(msgUsername, pane);
             chat_container.getPanes().add(pane);
+            ClientManager.addKnownUser(msgUsername);
+            privateUsers.put(msgUsername, pane);
+        } else {
+            newPanelContent = (VBox) privateUsers.get(msgUsername).getContent();
         }
+        newPanelContent.getChildren().add(label);
+        System.out.println(newPanelContent.getChildren().toString());
     }
 
     @FXML
@@ -83,7 +84,7 @@ public class SecondaryController {
         if (singleChoice.isSelected()) {
             destText = finalUser.getText();
         } else {
-            destText = "*";
+            destText = ProtocolMessages.GLOBAL_MESSAGE;
         }
         switch (Utils.checkIfValidMessage(destText, msgText)) {
             case -1:
@@ -102,11 +103,19 @@ public class SecondaryController {
         }
         ClientManager.sendMessage(destText, msgText);
         // Manca controllo se utente esiste!
+        VBox newPanelContent;
         if (singleChoice.isSelected() && (!ClientManager.getKnown_users().contains(destText))) {
-            AnchorPane newPanelContent = new AnchorPane();
+            newPanelContent = new VBox();
             TitledPane pane = new TitledPane(destText, newPanelContent);
             chat_container.getPanes().add(pane);
             ClientManager.addKnownUser(destText);
+            privateUsers.put(destText, pane);
+        } else if (singleChoice.isSelected()) {
+            newPanelContent = (VBox) privateUsers.get(destText).getContent();
+        } else {
+            newPanelContent = (VBox) chat_container.getPanes().get(0).getContent();
         }
+        Label label = new Label("tu: " + msgText);
+        newPanelContent.getChildren().add(label);
     }
 }

@@ -64,9 +64,11 @@ public class ClientManager {
             switch (msg_content) {
                 case ProtocolMessages.USER_JUST_CONNECTED:
                     definitive_message += sender + " si è unito alla chat!";
+                    global = true;
                     break;
                 case ProtocolMessages.USER_JUST_DISCONNECTED:
                     definitive_message += sender + " è uscito dalla chat";
+                    global = true;
                     break;
                 case ProtocolMessages.USER_NOT_FOUND:
                     definitive_message += sender + " - username non esistente";
@@ -80,9 +82,6 @@ public class ClientManager {
             global = true;
             definitive_message += msg_content;
         } else { // Se invece l'username è un altro mittente
-            if (!known_users.contains(receiver) && !msg_content.equals(ProtocolMessages.USER_NOT_FOUND)) {
-                known_users.add(receiver);
-            }
             definitive_message += msg_content;
         }
         definitive_message += "  " + LocalTime.now() + "\n";
