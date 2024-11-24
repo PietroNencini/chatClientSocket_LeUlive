@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import it.leulive.utils.ClientManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 
 public class PrimaryController {
     @FXML
-    private TextArea username;
+    private TextField username;
     @FXML
     private Label error_text;
 
@@ -29,7 +29,7 @@ public class PrimaryController {
         }
         if (ClientManager.isUsernameValid()) {
             ClientManager.startThread();
-            App.openChatView();
+            App.setRoot("secondary");
         } else {
             error_text.setText("Inserire un altro username!");
         }

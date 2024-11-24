@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import it.leulive.SecondaryController;
@@ -80,16 +81,23 @@ public class ClientManager {
             receiver = receiver.substring(1); // Si tratta di un messaggio globale (necessario saperlo per decidere su
                                               // quale dei riquadri chat inserirlo)
             global = true;
-            definitive_message += msg_content;
+            definitive_message = receiver + ": " + msg_content;
         } else { // Se invece l'username è un altro mittente
             definitive_message += msg_content;
         }
-        definitive_message += "  " + LocalTime.now() + "\n";
+        definitive_message += " - " + printMessageWithTime();
         // Per poter inviare al controller questi due dati è necessario renderli delle
         // costanti
         final String MESSAGE = definitive_message;
         final boolean GLOBAL_MESSAGE = global;
         Platform.runLater(() -> chatController.appendMessage(MESSAGE, GLOBAL_MESSAGE));
+    }
+
+    public static String printMessageWithTime() {
+        LocalTime currentTime = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String formattedTime = currentTime.format(formatter);
+        return formattedTime;
     }
 
     public static void sendMessage(String dest, String msg) throws IOException {

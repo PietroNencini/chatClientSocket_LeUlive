@@ -34,8 +34,6 @@ public class ListeningThread extends Thread {
             do {
                 String sender = in.readLine();
                 String received_message = in.readLine();
-                System.out.println(sender);
-                System.out.println(received_message);
                 String extra_username = null;
                 if (sender.equals(ProtocolMessages.SERVER_USERNAME)
                         && ((received_message.equals(ProtocolMessages.USER_JUST_CONNECTED)
