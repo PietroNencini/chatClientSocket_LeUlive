@@ -9,19 +9,19 @@
 
 <VBox alignment="CENTER" prefHeight="493.0" prefWidth="683.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.PrimaryController">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="36.0" prefWidth="235.0" text="INSERIRE USERNAME:" textAlignment="CENTER">
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="464.0" text="INSERIRE USERNAME:" textAlignment="CENTER">
          <font>
-            <Font name="System Bold" size="22.0" />
+            <Font name="System Bold" size="38.0" />
          </font>
       </Label>
-      <TextField fx:id="username" alignment="CENTER">
+      <TextField fx:id="username" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="44.0" prefWidth="319.0">
          <font>
-            <Font size="14.0" />
+            <Font size="20.0" />
          </font>
       </TextField>
-      <Label fx:id="error_text" alignment="CENTER" prefHeight="20.0" prefWidth="194.0" textAlignment="CENTER" textFill="RED">
+      <Label fx:id="error_text" alignment="CENTER" prefHeight="26.0" prefWidth="341.0" textAlignment="CENTER" textFill="RED">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="17.0" />
          </font>
       </Label>
       <Button fx:id="primaryButton" onAction="#startConnection" style="-fx-background-color: green; -fx-background-radius: 50px;" text="CONNETTITI" textFill="WHITE">
