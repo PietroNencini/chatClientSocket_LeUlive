@@ -37,7 +37,7 @@ public class SecondaryController {
 
     @FXML
     private void exit() throws IOException {
-        ClientManager.sendMessage("server", "/!"); // Destinatario server in quanto messaggio di protocollo
+        ClientManager.sendMessage(ProtocolMessages.SERVER_USERNAME, ProtocolMessages.DISCONNECTION_MESSAGE);
         try {
             ClientManager.disconnectFromServer();
         } catch (IOException e) {

@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.net.ConnectException;
 
 import java.io.IOException;
 
@@ -39,7 +40,12 @@ public class App extends Application {
     }
 
     public static void main(String[] args) throws IOException {
-        ClientManager.inizializeSocket();
+        try {
+            ClientManager.inizializeSocket();
+        } catch (ConnectException e) {
+            System.out.println("Server non raggiungibile");
+            System.exit(0);
+        }
         launch();
     }
 

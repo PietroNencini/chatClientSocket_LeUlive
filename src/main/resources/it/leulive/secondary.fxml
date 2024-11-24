@@ -29,7 +29,7 @@
                   <Font name="System Bold" size="24.0" />
                </font>
                <cursor>
-                  <Cursor fx:constant="MOVE" />
+                  <Cursor fx:constant="HAND" />
                </cursor>
                <effect>
                   <Blend opacity="0.86" />
@@ -69,11 +69,17 @@
                <toggleGroup>
                   <ToggleGroup fx:id="destinatario" />
                </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </RadioButton>
             <RadioButton fx:id="singleChoice" layoutX="474.0" layoutY="105.0" mnemonicParsing="false" onAction="#enableFinalUser" prefHeight="35.0" prefWidth="159.0" text="Messaggio privato" toggleGroup="$destinatario">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </RadioButton>
             <TextField fx:id="finalUser" disable="true" layoutX="652.0" layoutY="105.0" prefHeight="35.0" prefWidth="186.0" promptText="mario">
                <font>
@@ -84,6 +90,9 @@
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
          </children>
       </AnchorPane>
