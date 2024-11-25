@@ -17,7 +17,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1500.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.SecondaryController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1500.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.SecondaryController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -62,7 +62,7 @@
                   <Font size="14.0" />
                </font>
             </TextArea>
-            <RadioButton fx:id="globalChoice" layoutX="474.0" layoutY="39.0" mnemonicParsing="false" onAction="#disableFinalUser" prefHeight="35.0" prefWidth="159.0" selected="true" text="Messaggio globale">
+            <RadioButton fx:id="globalChoice" layoutX="474.0" layoutY="39.0" mnemonicParsing="false" onAction="#disableFinalUser" prefHeight="35.0" prefWidth="196.0" selected="true" text="Messaggio globale">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -73,7 +73,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </RadioButton>
-            <RadioButton fx:id="singleChoice" layoutX="474.0" layoutY="105.0" mnemonicParsing="false" onAction="#enableFinalUser" prefHeight="35.0" prefWidth="159.0" text="Messaggio privato" toggleGroup="$destinatario">
+            <RadioButton fx:id="singleChoice" layoutX="474.0" layoutY="105.0" mnemonicParsing="false" onAction="#enableFinalUser" prefHeight="35.0" prefWidth="179.0" text="Messaggio privato" toggleGroup="$destinatario">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -81,7 +81,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </RadioButton>
-            <TextField fx:id="finalUser" disable="true" layoutX="652.0" layoutY="105.0" prefHeight="35.0" prefWidth="186.0" promptText="mario">
+            <TextField fx:id="finalUser" disable="true" layoutX="670.0" layoutY="104.0" prefHeight="35.0" prefWidth="186.0" promptText="mario">
                <font>
                   <Font size="14.0" />
                </font>

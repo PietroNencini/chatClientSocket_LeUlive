@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="493.0" prefWidth="683.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.PrimaryController">
+<VBox alignment="CENTER" prefHeight="493.0" prefWidth="683.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.leulive.PrimaryController">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="464.0" text="INSERIRE USERNAME:" textAlignment="CENTER">
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="512.0" text="INSERIRE USERNAME:" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="38.0" />
          </font>
@@ -20,7 +20,7 @@
             <Font size="20.0" />
          </font>
       </TextField>
-      <Label fx:id="error_text" alignment="CENTER" prefHeight="26.0" prefWidth="341.0" textAlignment="CENTER" textFill="RED">
+      <Label fx:id="error_text" alignment="CENTER" prefHeight="26.0" prefWidth="443.0" textAlignment="CENTER" textFill="RED">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
